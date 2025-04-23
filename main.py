@@ -1,10 +1,6 @@
-
-
-print("Hello, World!")
-print("This is a simple Python script.")
-print("edited")
-
-
+from PSO import pso
+from GA import ga
+# from ACO import aco
 
 # Task data: ID, Time, Difficulty, Deadline, Skill
 tasks = [
@@ -28,3 +24,40 @@ employees = [
     {"id": "E4", "hours": 15, "level": 7, "skills": ["B", "C"]},
     {"id": "E5", "hours": 9, "level": 5, "skills": ["A", "C"]},
 ]
+
+def menu():
+    while True:
+        print("\n--- Task Assignment Optimiser ---")
+        print("1. Run PSO")
+        print("2. Run GA")
+        print("3. Run ACO")
+        print("4. Exit")
+        choice = input("Choose an algorithm to run: ")
+
+        if choice == "1":
+            print("\n[PSO Placeholder] Running PSO...")
+            position, fitness = pso(tasks, employees)
+            print("Assignment:", position)
+            print("Fitness Score:", fitness)
+
+        elif choice == "2":
+            print("\n[GA Placeholder] Running Genetic Algorithm...")
+            position, fitness = ga(task_data, employee_data)
+            print("Assignment:", position)
+            print("Fitness Score:", fitness)
+
+        elif choice == "3":
+            print("\n[ACO Placeholder] Running Ant Colony Optimisation...")
+            #position, fitness = aco(task_data, employee_data)
+            print("Assignment:", position)
+            print("Fitness Score:", fitness)
+
+        elif choice == "4":
+            print("Exiting test harness.")
+            break
+
+        else:
+            print("Invalid option. Try again.")
+
+if __name__ == "__main__":
+    menu()
