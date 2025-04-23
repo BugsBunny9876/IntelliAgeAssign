@@ -1,4 +1,4 @@
-def particleSwarmOptimization(task_data, employee_data, num_particles=30, max_iterations=500):
+def pso(task_data, employee_data, num_particles=30, max_iterations=500):
     # Initialize particles
     particles = []
     for _ in range(num_particles):
