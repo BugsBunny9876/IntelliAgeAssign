@@ -1,4 +1,5 @@
 from PenEval import evaluate_fitness
+import random
 
 def pso(task_data, employee_data, num_particles=30, max_iterations=500):
     # Initialize particles

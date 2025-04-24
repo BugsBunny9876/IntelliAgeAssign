@@ -1,3 +1,6 @@
+
+
+
 def evaluate_fitness(position, task_data, employee_data,
                      alpha=0.2, beta=0.2, delta=0.2, gamma=0.2, sigma=0.2):
     # Track penalties

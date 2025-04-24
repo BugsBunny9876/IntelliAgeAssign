@@ -1,6 +1,6 @@
 from PSO import pso
-from GA import ga
-# from ACO import aco
+from GenAlg import ga
+from ACO import aco
 
 # Task data: ID, Time, Difficulty, Deadline, Skill
 tasks = [
@@ -42,7 +42,7 @@ def menu():
 
         elif choice == "2":
             print("\n[GA Placeholder] Running Genetic Algorithm...")
-            position, fitness = ga(task_data, employee_data)
+            position, fitness = ga(tasks, employees)
             print("Assignment:", position)
             print("Fitness Score:", fitness)
 
