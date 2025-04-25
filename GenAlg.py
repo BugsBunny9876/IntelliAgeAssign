@@ -25,7 +25,8 @@ def ga( tasks, employees, populationSize = 20, maxGenerations = 500, crossoverRa
             if random.random() < crossoverRate:
                 offspring1, offspring2 = Crossover(parent1, parent2)
             else:
-                offspring1, offspring2 = parent1[:], parent2[:]
+                offspring1 = parent1[:]
+                offspring2 = parent2[:]
 
             # Mutation: Introduce random variation
             offspring1 = Mutate(offspring1, mutationRate, len(employees))
