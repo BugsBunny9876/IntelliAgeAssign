@@ -12,6 +12,8 @@ def aco(task_data, employee_data, num_ants=20, evaporation_rate=0.3, Q=100, max_
     best_solution = None
     best_fitness = float('inf')
 
+    fitnessHistory = []
+
     for iteration in range(max_iterations):
         all_solutions = []
 
@@ -41,8 +43,9 @@ def aco(task_data, employee_data, num_ants=20, evaporation_rate=0.3, Q=100, max_
             for task_idx, emp_idx in enumerate(solution):
                 pheromones[task_idx][emp_idx] += Q / (fitness + 1)  # add 1 to avoid division by 0
 
+        fitnessHistory.append(best_fitness)
         print(f"Iteration {iteration + 1}, Best Fitness: {best_fitness}")
         if best_fitness == 0:
             break  # early stop if perfect solution found
 
-    return best_solution, best_fitness
+    return best_solution, best_fitness, fitnessHistory

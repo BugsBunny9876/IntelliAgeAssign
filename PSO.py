@@ -17,6 +17,7 @@ def pso(task_data, employee_data, num_particles=30, max_iterations=500):
     # Initialize global best
     gbest_position = min(particles, key=lambda p: p["pbest_fitness"])["pbest_position"][:]
     gbest_fitness = evaluate_fitness(gbest_position, task_data, employee_data)
+    fitnessHistory = [gbest_fitness]
 
     # PSO Parameters
     w = 0.5   # inertia
@@ -58,8 +59,10 @@ def pso(task_data, employee_data, num_particles=30, max_iterations=500):
                 gbest_position = new_position[:]
                 gbest_fitness = fitness
 
+        fitnessHistory.append(gbest_fitness)
+
         print(f"Iteration {iteration}: Best Fitness = {gbest_fitness}")
         if gbest_fitness == 0:
             break  # Perfect solution found
 
-    return gbest_position, gbest_fitness
+    return gbest_position, gbest_fitness, fitnessHistory

@@ -10,6 +10,7 @@ def ga( tasks, employees, populationSize = 20, maxGenerations = 500, crossoverRa
     # Track the best solution
     bestSolution = population[0]
     bestFitness = evaluate_fitness(bestSolution, tasks, employees)
+    fitnessHistory = [bestFitness]
 
     # Step 2: Main Loop
     while generation < maxGenerations:
@@ -49,11 +50,11 @@ def ga( tasks, employees, populationSize = 20, maxGenerations = 500, crossoverRa
             if fitness < bestFitness:  # Lower fitness is better (minimizing cost)
                 bestSolution = individual
                 bestFitness = fitness
-
+        fitnessHistory.append(bestFitness)
         generation += 1
 
-    # Step 4: Return the best solution found
-    return bestSolution, bestFitness
+    # Step 4: Return the best solution foundz
+    return bestSolution, bestFitness, fitnessHistory
 
 # Helper function to generate the initial population
 def GenerateInitialPopulation(populationSize, numTasks, numEmployees):
