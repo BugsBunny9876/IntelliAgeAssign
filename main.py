@@ -41,7 +41,7 @@ def menu():
             print("Fitness Score:", fitness)
 
         elif choice == "2":
-            print("\n[GA Placeholder] Running Genetic Algorithm...")
+            print("\n[GA Placeholder] Running Genetic Algorit  hm...")
             position, fitness = ga(tasks, employees)
             print("Assignment:", position)
             print("Fitness Score:", fitness)

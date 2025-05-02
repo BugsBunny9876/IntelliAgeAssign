@@ -1,8 +1,11 @@
 import random
 from PenEval import evaluate_fitness
+import csv
+import copy
 
-# Genetic Algorithm function
-def ga( tasks, employees, populationSize = 20, maxGenerations = 500, crossoverRate = 0.7, mutationRate= 0.1):
+
+# GA function with fitness logging
+def ga(tasks, employees, populationSize=20, maxGenerations=500, crossoverRate=0.7, mutationRate=0.1):
     # Step 1: Initialization
     population = GenerateInitialPopulation(populationSize, len(tasks), len(employees))
     generation = 0
@@ -11,47 +14,48 @@ def ga( tasks, employees, populationSize = 20, maxGenerations = 500, crossoverRa
     bestSolution = population[0]
     bestFitness = evaluate_fitness(bestSolution, tasks, employees)
 
+    # Log fitness for CSV
+    fitness_log = [(1, bestFitness)]
+
     # Step 2: Main Loop
     while generation < maxGenerations:
         newPopulation = []
 
         # Step 3: Generate New Population
         while len(newPopulation) < populationSize:
-            # Selection: Choose parents based on fitness (roulette wheel selection)
             parent1 = SelectIndividual(population, tasks, employees)
             parent2 = SelectIndividual(population, tasks, employees)
 
-            # Crossover: Combine parents to produce offspring
             if random.random() < crossoverRate:
                 offspring1, offspring2 = Crossover(parent1, parent2)
             else:
                 offspring1, offspring2 = parent1[:], parent2[:]
 
-            # Mutation: Introduce random variation
             offspring1 = Mutate(offspring1, mutationRate, len(employees))
             offspring2 = Mutate(offspring2, mutationRate, len(employees))
 
-            # Evaluate fitness of offspring
-            fitness1 = evaluate_fitness(offspring1, tasks, employees)
-            fitness2 = evaluate_fitness(offspring2, tasks, employees)
-
-            # Add offspring to new population
             newPopulation.append(offspring1)
             newPopulation.append(offspring2)
 
-        # Replace old population with new one
         population = newPopulation[:populationSize]
 
-        # Update best solution if a better one is found
+        # Update best solution
         for individual in population:
             fitness = evaluate_fitness(individual, tasks, employees)
-            if fitness < bestFitness:  # Lower fitness is better (minimizing cost)
+            if fitness < bestFitness:
                 bestSolution = individual
                 bestFitness = fitness
 
         generation += 1
+        fitness_log.append((generation + 1, bestFitness))
 
-    # Step 4: Return the best solution found
+    # Write to CSV
+    with open('ga_fitness.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Iteration', 'Fitness'])
+        for iteration, fitness in fitness_log:
+            writer.writerow([iteration, fitness])
+
     return bestSolution, bestFitness
 
 # Helper function to generate the initial population
