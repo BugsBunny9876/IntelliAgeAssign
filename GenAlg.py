@@ -2,7 +2,7 @@ import random
 from PenEval import evaluate_fitness
 
 # Genetic Algorithm function
-def ga( tasks, employees, populationSize = 20, maxGenerations = 500, crossoverRate = 0.7, mutationRate= 0.1):
+def ga( tasks, employees, populationSize = 1000, maxGenerations = 500, crossoverRate = 0.7, mutationRate= 0.1):
     # Step 1: Initialization
     population = GenerateInitialPopulation(populationSize, len(tasks), len(employees))
     generation = 0
