@@ -3,7 +3,7 @@ import copy
 from PenEval import evaluate_fitness
 import csv
 
-def aco(task_data, employee_data, num_ants=20, evaporation_rate=0.3, Q=100, max_iterations=200):
+def aco(task_data, employee_data, num_ants=20, evaporation_rate=0.3, Q=100, max_iterations=500):
     num_tasks = len(task_data)
     num_employees = len(employee_data)
 

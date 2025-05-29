@@ -36,7 +36,7 @@ def menu():
 
         if choice == "1":
             print("\n[PSO Placeholder] Running PSO...")
-            position, fitness = pso(tasks, employees)
+            position, fitness,_ = pso(tasks, employees)
             print("Assignment:", position)
             print("Fitness Score:", fitness)
 
@@ -48,7 +48,7 @@ def menu():
 
         elif choice == "3":
             print("\n[ACO Placeholder] Running Ant Colony Optimisation...")
-            #position, fitness = aco(task_data, employee_data)
+            position, fitness = aco(tasks, employees)
             print("Assignment:", position)
             print("Fitness Score:", fitness)
 

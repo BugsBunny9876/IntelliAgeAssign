@@ -1,70 +1,76 @@
-from PenEval import evaluate_fitness
 import random
 import csv
 import copy
+from PenEval import evaluate_fitness
 
-# PSO function with fitness logging
+
+
+
+# PSO function aligned with pseudocode
 def pso(task_data, employee_data, num_particles=30, max_iterations=500):
-    # Initialize particles
-    particles = []
-    for _ in range(num_particles):
-        position = [random.choice(range(len(employee_data))) for _ in range(len(task_data))]
-        velocity = [random.uniform(-1, 1) for _ in range(len(task_data))]
-        particles.append({
-            "position": position,
-            "velocity": velocity,
-            "pbest_position": position[:],
-            "pbest_fitness": evaluate_fitness(position, task_data, employee_data)
-        })
+    # Parameters
+    n = len(task_data)  # Number of dimensions (tasks)
+    N = num_particles  # Number of particles
+    T_max = max_iterations  # Maximum iterations
+    w = 0.5  # Inertia weight
+    c1 = 1.5  # Cognitive coefficient
+    c2 = 1.5  # Social coefficient
+    x_min = 0  # Minimum employee index
+    x_max = len(employee_data) - 1  # Maximum employee index
+
+    # Step 1: Initialization
+    x = []  # Particle positions: x[i][d]
+    v = []  # Particle velocities: v[i][d]
+    pBest = []  # Personal best positions
+    fitness_pBest = []  # Personal best fitness values
+
+    for i in range(N):
+        position = [random.randint(x_min, x_max) for _ in range(n)]
+        velocity = [random.uniform(-4, 4) for _ in range(n)]  # Velocity range as per Eight Queens
+        x.append(position)
+        v.append(velocity)
+        pBest.append(position[:])
+        fitness_pBest.append(evaluate_fitness(position, task_data, employee_data))
 
     # Initialize global best
-    gbest_position = min(particles, key=lambda p: p["pbest_fitness"])["pbest_position"][:]
-    gbest_fitness = evaluate_fitness(gbest_position, task_data, employee_data)
-
-    # PSO Parameters
-    w = 0.5   # inertia
-    c1 = 1.5  # cognitive
-    c2 = 1.5  # social
+    k = min(range(N), key=lambda i: fitness_pBest[i])
+    gBest = pBest[k][:]
+    fitness_gBest = fitness_pBest[k]
 
     # Log fitness for CSV
     fitness_log = []
 
-    for iteration in range(max_iterations):
-        for p in particles:
-            new_velocity = []
-            new_position = []
+    # Step 2: Main optimization loop
+    for t in range(T_max):
+        for i in range(N):
+            for d in range(n):
+                r1 = random.random()
+                r2 = random.random()
+                # Velocity update
+                v[i][d] = w * v[i][d] + c1 * r1 * (pBest[i][d] - x[i][d]) + c2 * r2 * (gBest[d] - x[i][d])
+                # Position update
+                x[i][d] = round(x[i][d] + v[i][d])
+                # Boundary handling
+                x[i][d] = x[i][d] % (x_max + 1)
+                if x[i][d] < x_min:
+                    x[i][d] += (x_max + 1)
 
-            for i in range(len(p["position"])):
-                r1, r2 = random.random(), random.random()
-                inertia = w * p["velocity"][i]
-                cognitive = c1 * r1 * (p["pbest_position"][i] - p["position"][i])
-                social = c2 * r2 * (gbest_position[i] - p["position"][i])
-                v_new = inertia + cognitive + social
-                new_velocity.append(v_new)
-                pos_new = int(round(p["position"][i] + v_new)) % len(employee_data)
-                new_position.append(pos_new)
-
-            p["velocity"] = new_velocity
-            p["position"] = new_position
-
-            # Fitness evaluation
-            fitness = evaluate_fitness(new_position, task_data, employee_data)
+            # Evaluate fitness
+            fitness_current = evaluate_fitness(x[i], task_data, employee_data)
 
             # Update personal best
-            if fitness < p["pbest_fitness"]:
-                p["pbest_position"] = new_position[:]
-                p["pbest_fitness"] = fitness
+            if fitness_current < fitness_pBest[i]:
+                pBest[i] = x[i][:]
+                fitness_pBest[i] = fitness_current
 
-            # Update global best
-            if fitness < gbest_fitness:
-                gbest_position = new_position[:]
-                gbest_fitness = fitness
+        # Update global best
+        for i in range(N):
+            if fitness_pBest[i] < fitness_gBest:
+                gBest = pBest[i][:]
+                fitness_gBest = fitness_pBest[i]
 
-        # Log the best fitness for this iteration
-        fitness_log.append((iteration + 1, gbest_fitness))
-
-        if gbest_fitness == 0:
-            break  # Perfect solution found
+        # Log fitness
+        fitness_log.append((t + 1, fitness_gBest))
 
     # Write to CSV
     with open('pso_fitness.csv', 'w', newline='') as csvfile:
@@ -73,4 +79,4 @@ def pso(task_data, employee_data, num_particles=30, max_iterations=500):
         for iteration, fitness in fitness_log:
             writer.writerow([iteration, fitness])
 
-    return gbest_position, gbest_fitness
+    return gBest, fitness_gBest, fitness_log
